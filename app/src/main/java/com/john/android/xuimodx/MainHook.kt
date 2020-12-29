@@ -13,8 +13,11 @@ import de.robv.android.xposed.callbacks.XC_LoadPackage
  * @Date: 12/28/20 9:38 AM
  * @Description:
  */
-
 class MainHook:IXposedHookLoadPackage {
+    
+    companion object{
+        val foundedPackage = hashMapOf<String,Boolean>()
+    }
 
     override fun handleLoadPackage(lpparam: XC_LoadPackage.LoadPackageParam?) {
         var r: Class<*>?
@@ -30,6 +33,8 @@ class MainHook:IXposedHookLoadPackage {
             XposedBridge.hookAllMethods(activityThread,"performLaunchActivity",object :XC_MethodHook(){
                 override fun afterHookedMethod(param: MethodHookParam?) {
                     if(param==null) return
+                    if(foundedPackage[lpparam.packageName] == true) return
+                    foundedPackage[lpparam.packageName] = true
                     val mInitialApplication = XposedHelpers.getObjectField(param.thisObject,"mInitialApplication")
                     val  finalCL = XposedHelpers.callMethod(mInitialApplication,"getClassLoader") as ClassLoader
                     XposedBridge.log("found classload is => $finalCL")
