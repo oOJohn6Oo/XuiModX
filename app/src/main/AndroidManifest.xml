@@ -15,6 +15,6 @@
             android:value="xuimod on androidx (only recyclerview item animation)" />
         <meta-data
             android:name="xposedminversion"
-            android:value="93" />
+            android:value="30" />
     </application>
 </manifest>
